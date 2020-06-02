@@ -1,0 +1,7 @@
+version: "3.1"
+services:
+  polestar-auth-server:
+    image: polestar-auth-server:v1.0.0.1
+    container_name: polestar-auth-server
+    ports:
+    - 8080:8080

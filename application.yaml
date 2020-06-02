@@ -1,0 +1,38 @@
+# server & client
+server:
+  addr: ":8081"
+# server
+mysql:
+  url: root:123@(192.168.1.2:3306)/auth?charset=utf8&parseTime=True&loc=Local
+  maxIdleConns: 5
+  logMode: false
+# server
+# TODO: Unused
+redis:
+  url: 192.168.1.2:6379
+  db: 15
+auth:
+  # server & client (认证服务器与资源服务器保持一致)
+  # jwt sign secret
+  jwt:
+    secret: polestar
+  # server
+  tokenExp:
+    # access token expiration(seconds)
+    accessToken: 20
+    # refresh token expiration(seconds)
+    refreshToken: 10080
+  # client
+  # Auth apis(Ant match)
+  authUris:
+    - uri: /api/hello/**
+      methods:
+        - GET
+      authorities:
+        - UMS_VIEW
+  # client
+  # Skip auth apis(Ant match)
+  skipUris:
+    - uri: /api/hello/**
+      methods:
+        - POST
