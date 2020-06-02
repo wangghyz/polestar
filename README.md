@@ -119,7 +119,7 @@ func WithoutTokenHelloHandler(ctx *gin.Context) {
 ## Server
 example/auth/server/example_auth_server_mysql.go
 
-## client
+## Client
 example/auth/client/example_auth_client.go
 
 # For communication
