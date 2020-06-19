@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"polestar/auth/client/filter"
-	_const "polestar/auth/const"
-	"polestar/common/util"
+	"github.com/wangghyz/polestar/auth/client/filter"
+	_const "github.com/wangghyz/polestar/auth/const"
+	"github.com/wangghyz/polestar/common/util"
 )
 
 func main() {

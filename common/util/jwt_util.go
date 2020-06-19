@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
-	_const "polestar/auth/const"
+	_const "github.com/wangghyz/polestar/auth/const"
 )
 
 func GenerateJwtToken(tokenType _const.TokenType, clientId, userName, key string, jti string, exp int64, scope []string, roles []string, authorities []string, payloadExtendData map[string]interface{}) (tokenString string, err error) {

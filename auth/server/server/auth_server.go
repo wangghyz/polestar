@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"polestar/auth/server/handler"
+	"github.com/wangghyz/polestar/auth/server/handler"
 	"strings"
 )
 

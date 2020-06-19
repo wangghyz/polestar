@@ -3,8 +3,8 @@ package store
 import (
 	"errors"
 	uuid "github.com/satori/go.uuid"
-	_const "polestar/auth/const"
-	"polestar/common/util"
+	_const "github.com/wangghyz/polestar/auth/const"
+	"github.com/wangghyz/polestar/common/util"
 	"time"
 )
 

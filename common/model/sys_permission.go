@@ -1,7 +1,7 @@
 package model
 
 import (
-	base2 "polestar/common/model/base"
+	base2 "github.com/wangghyz/polestar/common/model/base"
 )
 
 type SysPermission struct {

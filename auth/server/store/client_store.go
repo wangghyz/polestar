@@ -1,7 +1,7 @@
 package store
 
 import (
-	_const "polestar/auth/const"
+	_const "github.com/wangghyz/polestar/auth/const"
 	"time"
 )
 

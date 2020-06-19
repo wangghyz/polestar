@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	_const "polestar/auth/const"
-	"polestar/common/model"
-	"polestar/common/service"
+	_const "github.com/wangghyz/polestar/auth/const"
+	"github.com/wangghyz/polestar/common/model"
+	"github.com/wangghyz/polestar/common/service"
 	"strings"
 	"time"
 )

@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/jinzhu/gorm"
-	"polestar/common/db"
-	"polestar/common/model"
+	"github.com/wangghyz/polestar/common/db"
+	"github.com/wangghyz/polestar/common/model"
 )
 
 type (

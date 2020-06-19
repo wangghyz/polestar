@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/vibrantbyte/go-antpath/antpath"
-	_const "polestar/auth/const"
+	_const "github.com/wangghyz/polestar/auth/const"
 	"strings"
 )
 

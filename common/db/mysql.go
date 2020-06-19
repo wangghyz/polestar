@@ -4,8 +4,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"log"
-	"polestar/common/model"
-	"polestar/common/util"
+	"github.com/wangghyz/polestar/common/model"
+	"github.com/wangghyz/polestar/common/util"
 )
 
 var (

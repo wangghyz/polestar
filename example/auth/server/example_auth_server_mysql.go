@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"polestar/auth/server/server"
-	"polestar/common/db"
-	"polestar/common/util"
+	"github.com/wangghyz/polestar/auth/server/server"
+	"github.com/wangghyz/polestar/common/db"
+	"github.com/wangghyz/polestar/common/util"
 )
 
 func main() {

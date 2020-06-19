@@ -5,12 +5,12 @@ import (
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"log"
-	_const "polestar/auth/const"
-	"polestar/auth/server/store"
-	"polestar/common/db"
-	"polestar/common/model"
-	"polestar/common/service"
-	"polestar/common/util"
+	_const "github.com/wangghyz/polestar/auth/const"
+	"github.com/wangghyz/polestar/auth/server/store"
+	"github.com/wangghyz/polestar/common/db"
+	"github.com/wangghyz/polestar/common/model"
+	"github.com/wangghyz/polestar/common/service"
+	"github.com/wangghyz/polestar/common/util"
 	"time"
 )
 

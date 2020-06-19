@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	_const "polestar/auth/const"
-	"polestar/common/util"
+	_const "github.com/wangghyz/polestar/auth/const"
+	"github.com/wangghyz/polestar/common/util"
 )
 
 type (
