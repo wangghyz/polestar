@@ -1,4 +1,4 @@
-module polestar
+module github.com/wangghyz/polestar
 
 go 1.14
 
