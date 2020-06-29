@@ -6,7 +6,9 @@ import (
 	"os"
 )
 
-const fileApplicationYaml string = "application.yaml"
+var (
+	fileApplicationYaml = "application.yaml"
+)
 
 type (
 	AppConfig struct {
@@ -43,6 +45,10 @@ type (
 )
 
 var applicationConfig *AppConfig = nil
+
+func SetAppConfigFileName(fileName string) {
+	fileApplicationYaml = fileName
+}
 
 func ApplicationConfig() *AppConfig {
 	if applicationConfig != nil {

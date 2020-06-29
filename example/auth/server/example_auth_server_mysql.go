@@ -2,15 +2,17 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 	"github.com/wangghyz/polestar/auth/server/server"
 	"github.com/wangghyz/polestar/common/db"
 	"github.com/wangghyz/polestar/common/util"
+	"log"
+	"net/http"
 )
 
 func main() {
 	// 系统配置
+	util.SetAppConfigFileName("application.yaml")
+	// 获取配置对象
 	appConfig := util.ApplicationConfig()
 
 	// 开启数据库

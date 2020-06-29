@@ -3,14 +3,16 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"github.com/wangghyz/polestar/auth/client/filter"
 	_const "github.com/wangghyz/polestar/auth/const"
 	"github.com/wangghyz/polestar/common/util"
+	"net/http"
 )
 
 func main() {
 	// 系统配置
+	util.SetAppConfigFileName("application.yaml")
+	// 获取配置对象
 	appConfig := util.ApplicationConfig()
 
 	// Web服务
