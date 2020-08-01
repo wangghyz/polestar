@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/wangghyz/polestar/common"
+	"github.com/wangghyz/polestar/persistence/db"
+	"github.com/wangghyz/polestar/persistence/model"
+	"github.com/wangghyz/polestar/server/store"
+	"github.com/wangghyz/polestar/service"
 	"golang.org/x/crypto/bcrypt"
 	"log"
-	_const "github.com/wangghyz/polestar/auth/const"
-	"github.com/wangghyz/polestar/auth/server/store"
-	"github.com/wangghyz/polestar/common/db"
-	"github.com/wangghyz/polestar/common/model"
-	"github.com/wangghyz/polestar/common/service"
-	"github.com/wangghyz/polestar/common/util"
 	"time"
 )
 
@@ -25,14 +24,14 @@ func main() {
 	// 添加Client
 	clientStore := store.NewMySQLClientStoreInstance()
 
-	secret, err := bcrypt.GenerateFromPassword([]byte(util.ApplicationConfig().Auth.Jwt.Secret), bcrypt.DefaultCost)
+	secret, err := bcrypt.GenerateFromPassword([]byte(common.ApplicationConfig().Auth.Jwt.Secret), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 	} else {
 		cli := &store.ClientInfo{
 			ClientId:             "democlient",
 			ClientSecret:         string(secret),
-			GrantType:            []_const.GrantType{_const.GrantTypePasswordCredentials, _const.GrantTypeRefreshToken},
+			GrantType:            []common.GrantType{common.GrantTypePasswordCredentials, common.GrantTypeRefreshToken},
 			Scope:                []string{"ums"},
 			AccessTokenDuration:  time.Minute * 10,
 			RefreshTokenDuration: time.Hour * 24 * 2,

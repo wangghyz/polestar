@@ -1,45 +1,15 @@
-# polestar
-Golang based OAuth2 server & client
+package main
 
-# Copyright
-Copyright 2020 wangghyz/kouki All Rights Reserved.
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/wangghyz/polestar/client/filter"
+	"github.com/wangghyz/polestar/common"
+	"github.com/wangghyz/polestar/web"
+	"log"
+	"net/http"
+)
 
-# Use the server
-```go
-func main() {
-    defer func() {
-        r := recover()
-        if r != nil {
-            log.Fatalf("%v\n", r)
-        }
-    }()
-
-    // 获取配置对象
-    appConfig := common.ApplicationConfig()
-
-    // 开启数据库
-    dbConn := db.NewMySQLConnectionInstance()
-    defer func() {
-        if dbConn != nil {
-            // 释放数据库链接
-            dbConn.Close()
-        }
-    }()
-
-    engine := web.NewPolestarWebEngine()
-
-    // 初始化认证服务器
-    server.InitGinAuthServer(engine, func() (basePath string, allowedMethods []string, handlers gin.HandlersChain) {
-        return "/token", []string{http.MethodPost, http.MethodGet}, nil
-    })
-
-    // 启动web服务
-    engine.Run(appConfig.Server.Addr)
-}
-```
-
-# Use the client
-```go
 func main() {
 	defer func() {
 		r := recover()
@@ -87,14 +57,3 @@ func WithTokenHelloHandler(ctx *gin.Context) {
 func WithoutTokenHelloHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "Hello World! ")
 }
-```
-
-# Example
-## Server
-example/auth/server/example_auth_server_mysql.go
-
-## Client
-example/auth/client/example_auth_client.go
-
-# For communication
-E-mail：wangghyz@163.com
