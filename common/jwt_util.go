@@ -40,12 +40,12 @@ func ParseJwtToken(tokenString, key string) map[string]interface{} {
 	})
 
 	if err != nil {
-		PanicPolestarError(ERR_SYS_ERROR, "Token解析错误！"+err.Error())
+		PanicPolestarError(ERR_HTTP_AUTH_FAILED, "Token解析错误！"+err.Error())
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !(ok && token.Valid) {
-		PanicPolestarError(ERR_SYS_ERROR, "无效的token！")
+		PanicPolestarError(ERR_HTTP_AUTH_FAILED, "无效的token！")
 	}
 	return claims
 }

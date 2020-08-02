@@ -24,10 +24,10 @@ func GetTokenFromRequest(ctx *gin.Context) string {
 
 	token = ctx.GetHeader(Authorization)
 	if len(token) <= 0 {
-		PanicPolestarError(ERR_SYS_ERROR, "token不存在！")
+		PanicPolestarError(ERR_HTTP_AUTH_FAILED, "token不存在！")
 	}
 	if !strings.HasPrefix(strings.ToUpper(token), "BEARER") {
-		PanicPolestarError(ERR_SYS_ERROR, "不支持的token类型！")
+		PanicPolestarError(ERR_HTTP_AUTH_FAILED, "不支持的token类型！")
 	}
 
 	return token[7:]
