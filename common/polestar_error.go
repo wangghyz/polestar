@@ -7,22 +7,28 @@ import (
 
 // PolestarError PolestarError
 type PolestarError struct {
-	code          *ErrorCode
-	detailMessage string
+	ErrorCode
+	DetailMessage string
 }
 
 // Error PolestarError error实现
 func (pe *PolestarError) Error() string {
-	if pe.detailMessage == "" {
-		return fmt.Sprintf("[%d][%s]", pe.code.Code, pe.code.Message)
+	if pe.DetailMessage == "" {
+		return fmt.Sprintf("[%d][%s]", pe.Code, pe.Message)
 	} else {
-		return fmt.Sprintf("[%d][%s] %s", pe.code.Code, pe.code.Message, pe.detailMessage)
+		return fmt.Sprintf("[%d][%s] %s", pe.Code, pe.Message, pe.DetailMessage)
 	}
 }
 
 // NewPolestarError 创建NewPolestarError
 func NewPolestarError(code *ErrorCode, detailMessage string) *PolestarError {
-	return &PolestarError{code, detailMessage}
+	return &PolestarError{
+		ErrorCode: ErrorCode{
+			Code:    code.Code,
+			Message: code.Message,
+		},
+		DetailMessage: detailMessage,
+	}
 }
 
 // IsPolestarError 判断是否是PolestarError

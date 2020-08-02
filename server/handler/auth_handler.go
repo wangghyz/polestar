@@ -99,7 +99,7 @@ func NewTokenHandlerFunc(
 		form := &TokenHandlerForm{}
 		err := ctx.Bind(form)
 		if err != nil {
-			common.PanicPolestarError(common.ERR_HTTP_REQUEST_ERROR, err.Error())
+			common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 		}
 		formClientId := form.ClientId
 		formClientSecret := form.ClientSecret
@@ -107,7 +107,7 @@ func NewTokenHandlerFunc(
 		// 获取clientInfo
 		clientInfo, err := clientStore.GetClient(formClientId)
 		if err != nil {
-			common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "客户端信息不存在!")
+			common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "客户端信息不存在!")
 		}
 
 		// 请求GrantType判断
@@ -122,12 +122,12 @@ func NewTokenHandlerFunc(
 				}
 			}
 			if !flg {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "客户端不支持的授权模式!")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "客户端不支持的授权模式!")
 			}
 
 			// 验证Client Secret
 			if !common.VerifySecretOrPassword(clientInfo.ClientSecret, formClientSecret) {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "错误的ClientSecret!")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "错误的ClientSecret!")
 			}
 
 			// 查询用户数据
@@ -136,10 +136,10 @@ func NewTokenHandlerFunc(
 
 			user, err := service.NewSysUserService().GetUserByUserName(formUserName)
 			if err != nil {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "用户名或密码错误!")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "用户名或密码错误!")
 			}
 			if !common.VerifySecretOrPassword(user.Password, formPassword) {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "用户名或密码错误!")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "用户名或密码错误!")
 			}
 
 			// 做成JWT Payload 自定义内容
@@ -147,20 +147,20 @@ func NewTokenHandlerFunc(
 			if payloadFunc != nil {
 				session, err = payloadFunc(formClientId, formUserName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 			var roles, authorities []string
 			if rolesFunc != nil {
 				roles, err = rolesFunc(formClientId, formUserName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 			if authoritiesFunc != nil {
 				authorities, err = authoritiesFunc(formClientId, formUserName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 
@@ -170,7 +170,7 @@ func NewTokenHandlerFunc(
 			// 生成Token
 			token, refreshToken, err := tokenStore.GenerateToken(clientInfo, formUserName, scope, roles, authorities, session)
 			if err != nil {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 			}
 
 			// 返回数据
@@ -189,7 +189,7 @@ func NewTokenHandlerFunc(
 				}
 			}
 			if !flg {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "客户端不支持的授权模式！")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "客户端不支持的授权模式！")
 			}
 
 			// 解析refresh_token
@@ -197,17 +197,17 @@ func NewTokenHandlerFunc(
 
 			// 判断token类型
 			if common.TokenType(fmt.Sprintf("%s", tokenBodyMap[common.ClaimsType])) != common.TokenTypeRefreshToken {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "无效的刷新token！")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "无效的刷新token！")
 			}
 
 			// 验证Client Secret
 			if !common.VerifySecretOrPassword(clientInfo.ClientSecret, formClientSecret) {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "错误的Client Secret！")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "错误的Client Secret！")
 			}
 
 			userName := fmt.Sprintf("%s", tokenBodyMap[common.ClaimsUserName])
 			if len(userName) <= 0 {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "refresh_token不包含用户信息！")
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "refresh_token不包含用户信息！")
 			}
 
 			// 做成JWT Payload 自定义内容
@@ -215,20 +215,20 @@ func NewTokenHandlerFunc(
 			if payloadFunc != nil {
 				session, err = payloadFunc(formClientId, userName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 			var roles, authorities []string
 			if rolesFunc != nil {
 				roles, err = rolesFunc(formClientId, userName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 			if authoritiesFunc != nil {
 				authorities, err = authoritiesFunc(formClientId, userName)
 				if err != nil {
-					common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 				}
 			}
 
@@ -238,7 +238,7 @@ func NewTokenHandlerFunc(
 			// 生成Token
 			token, refreshToken, err := tokenStore.GenerateToken(clientInfo, userName, scope, roles, authorities, session)
 			if err != nil {
-				common.PanicPolestarError(common.ERR_BUSINESS_ERROR, err.Error())
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 			}
 
 			// 做成返回消息
@@ -249,7 +249,7 @@ func NewTokenHandlerFunc(
 			return
 		default:
 			// 非法模式
-			common.PanicPolestarError(common.ERR_BUSINESS_ERROR, "不支持的GrantType！")
+			common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "不支持的GrantType！")
 		}
 	}
 }

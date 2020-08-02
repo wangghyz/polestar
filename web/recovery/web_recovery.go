@@ -20,7 +20,7 @@ func PolestarWebRecovery() gin.HandlerFunc {
 			if err, ok := common.IsPolestarError(r); ok {
 				// 自定义HTTP状态码 900：业务系统错误
 				c.Error(err)
-				c.AbortWithStatusJSON(900, err.Error())
+				c.AbortWithStatusJSON(900, err)
 			} else {
 				// 其他异常
 				err := errors.New(fmt.Sprintf("%v", r))
