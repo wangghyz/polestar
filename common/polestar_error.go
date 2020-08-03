@@ -63,3 +63,10 @@ func HandleErrorToPanicPolestarError(err error, code *ErrorCode) {
 		panic(NewPolestarError(code, err.Error()))
 	}
 }
+
+// HandleErrorToPanicPolestarErrorWithMessage 处理错误并Panic
+func HandleErrorToPanicPolestarErrorWithMessage(err error, code *ErrorCode, detailMessage string) {
+	if err != nil {
+		panic(NewPolestarError(code, detailMessage + ":" + err.Error()))
+	}
+}
