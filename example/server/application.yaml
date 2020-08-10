@@ -14,6 +14,7 @@ redis:
   url: 192.168.1.2:6379
   db: 15
 auth:
+  # server
   # Cache 缓存 轮询清空时间（单位分钟）
   cache:
     cleanupInterval: 5

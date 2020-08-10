@@ -18,12 +18,13 @@ type (
 
 		// 刷新token
 		RefreshToken(
+			refreshToken string,
 			clientInfo *ClientInfo,
 			userName string,
 			scope []string,
 			roles []string,
 			authorities []string,
-			customPayload map[string]interface{}) (accessToken, refreshToken string, err error)
+			customPayload map[string]interface{}) (accessTokenRtn, refreshTokenRtn string, err error)
 
 		// 检查AccessToken
 		CheckAccessToken(accessToken string) bool

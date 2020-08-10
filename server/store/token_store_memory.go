@@ -131,21 +131,24 @@ func (s *memoryTokenStore) GenerateToken(
 
 // RefreshToken 刷新Token（之前的AccessToken和RefreshToken作废，重新生成）
 func (s *memoryTokenStore) RefreshToken(
+	refreshToken string,
 	clientInfo *ClientInfo,
 	userName string,
 	scope []string,
 	roles []string,
 	authorities []string,
-	customPayload map[string]interface{}) (accessToken, refreshToken string, err error) {
+	customPayload map[string]interface{}) (accessTokenRtn, refreshTokenRtn string, err error) {
 
+	// 获取refresh token
 	var jti string
-	if tokenData, exists := s.Cache.Get(userName + "-" + C_ACCESS_TOKEN); exists {
-		jti = tokenData.(cachedTokenData).Jti
-	}
-	if jti == "" {
-		if tokenData, exists := s.Cache.Get(userName + "-" + C_REFRESH_TOKEN); exists {
-			jti = tokenData.(cachedTokenData).Jti
+	if tokenData, exists := s.Cache.Get(userName + "-" + C_REFRESH_TOKEN); exists {
+		if refreshToken != tokenData.(cachedTokenData).TokenData {
+			return "", "", errors.New("非法的RefreshToken！")
 		}
+
+		jti = tokenData.(cachedTokenData).Jti
+	} else {
+		return "", "", errors.New("非法的RefreshToken！")
 	}
 
 	s.Locker.Lock()

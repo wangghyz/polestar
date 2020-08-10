@@ -176,7 +176,7 @@ func JwtTokenGenerator(
 			scope := clientInfo.Scope
 
 			// 生成Token
-			token, refreshToken, err := tokenStore.RefreshToken(clientInfo, userName, scope, roles, authorities, session)
+			token, refreshToken, err := tokenStore.RefreshToken(form.RefreshToken, clientInfo, userName, scope, roles, authorities, session)
 			if err != nil {
 				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 			}
@@ -191,5 +191,59 @@ func JwtTokenGenerator(
 			// 非法模式
 			common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "不支持的GrantType！")
 		}
+	}
+}
+
+// DefaultJwtRolesGenerator 默认角色数据生成器
+func DefaultJwtRolesGenerator() JwtRolesGenerator {
+	return func(clientId, userName string) (strings []string, e error) {
+		// 角色信息
+		roles, err := service.NewSysRoleService().GetRolesByUserName(userName)
+		if err != nil {
+			return nil, err
+		} else {
+			var tmp []string
+			for _, role := range roles {
+				tmp = append(tmp, role.EnName)
+			}
+			return tmp, nil
+		}
+	}
+}
+
+// DefaultJwtAuthoritiesGenerator 默认权限数据生成器
+func DefaultJwtAuthoritiesGenerator() JwtAuthoritiesGenerator {
+	return func(clientId, userName string) ([]string, error) {
+		// 权限信息
+		permissions, err := service.NewSysPermissionService().GetPermissionsByUserName(userName)
+		if err != nil {
+			return nil, err
+		} else {
+			var tmp []string
+			for _, per := range permissions {
+				tmp = append(tmp, per.EnName)
+			}
+			return tmp, nil
+		}
+	}
+}
+
+// DefaultJwtCustomPayloadGenerator 默认自定义Payload生成器
+func DefaultJwtCustomPayloadGenerator() JwtCustomPayloadGenerator {
+	return func(clientId, userName string) (map[string]interface{}, error) {
+		session := make(map[string]interface{})
+
+		// 用户信息
+		user, err := service.NewSysUserService().GetUserByUserName(userName)
+		if err != nil {
+			return nil, err
+		} else {
+			session = map[string]interface{}{
+				"userId":    user.ID,
+				"name":      user.Name,
+				"headerImg": user.HeaderImage,
+			}
+		}
+		return session, nil
 	}
 }

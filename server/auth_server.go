@@ -48,6 +48,21 @@ func InitGinAuthServer(
 	serveCheckTokenEndpoint(engine, cteg, tokenStore)
 }
 
+// DefaultOauth2EndpointGenerator 默认端点生成器
+func DefaultOauth2EndpointGenerator() Oauth2EndpointGenerator {
+	return func() (tokenEndpoint TokenEndpointGenerator, checkTokenEndpoint CheckTokenEndpointGenerator) {
+		// token 生成端点
+		tokenEndpoint = func() (basePath string, allowedMethods []string, handlers gin.HandlersChain) {
+			return "/token", []string{http.MethodPost, http.MethodGet}, nil
+		}
+		// token 检查端点
+		checkTokenEndpoint = func() (path string, allowedMethods []string, customMiddleware gin.HandlersChain) {
+			return "/check", []string{http.MethodPost, http.MethodGet}, nil
+		}
+		return tokenEndpoint, checkTokenEndpoint
+	}
+}
+
 // serveTokenEndpoint 处理Token Endpoint
 func serveTokenEndpoint(
 	engine *gin.Engine,
