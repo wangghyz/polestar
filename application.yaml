@@ -12,6 +12,9 @@ redis:
   url: 192.168.1.2:6379
   db: 15
 auth:
+  # Cache 缓存 轮询清空时间（单位分钟）
+  cache:
+    cleanupInterval: 5
   # server & client (认证服务器与资源服务器保持一致)
   # jwt sign secret
   jwt:

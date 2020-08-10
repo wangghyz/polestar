@@ -8,15 +8,24 @@ type (
 	// MySQL类型: store.mySQLClientStore
 	TokenStore interface {
 		// 生成token
-		GenerateToken(clientInfo *ClientInfo, userName string, scope []string, roles []string, authorities []string, payloadExtendData map[string]interface{}) (accessToken, refreshToken string, err error)
+		GenerateToken(
+			clientInfo *ClientInfo,
+			userName string,
+			scope []string,
+			roles []string,
+			authorities []string,
+			customPayload map[string]interface{}) (accessToken, refreshToken string, err error)
+
+		// 刷新token
+		RefreshToken(
+			clientInfo *ClientInfo,
+			userName string,
+			scope []string,
+			roles []string,
+			authorities []string,
+			customPayload map[string]interface{}) (accessToken, refreshToken string, err error)
+
+		// 检查AccessToken
+		CheckAccessToken(accessToken string) bool
 	}
-
-	// JwtPayloadExtendDataGenerator Jwt Token Payload 自定义内容生成器
-	// 返回：map[string]interface{}
-	JwtPayloadExtendDataGenerator func(clientId, userName string) (map[string]interface{}, error)
-
-	// Jwt中的角色信息
-	JwtAuthRolesGenerator func(clientId, userName string) ([]string, error)
-	// Jwt中的权限信息
-	JwtAuthAuthoritiesGenerator func(clientId, userName string) ([]string, error)
 )

@@ -3,6 +3,7 @@ package common
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"time"
 )
 
 var (
@@ -27,6 +28,9 @@ type (
 			DB  int    `yaml:"db"`
 		} `yaml:"redis"`
 		Auth struct {
+			Cache struct {
+				CleanupInterval time.Duration `yaml:'cleanupInterval'`
+			} `yaml:"cache"`
 			Jwt struct {
 				Secret string `yaml:"secret"`
 			} `yaml:"jwt"`

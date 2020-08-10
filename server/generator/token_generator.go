@@ -1,14 +1,11 @@
-package handler
+package generator
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/wangghyz/polestar/common"
 	"github.com/wangghyz/polestar/server/store"
 	"github.com/wangghyz/polestar/service"
-	"log"
 	"net/http"
 )
 
@@ -22,77 +19,22 @@ type (
 		Password     string           `form:"password" json:"password"`
 		RefreshToken string           `form:"refresh_token" json:"refresh_token"`
 	}
+
+	// Jwt中的角色信息
+	JwtRolesGenerator func(clientId, userName string) ([]string, error)
+	// Jwt中的权限信息
+	JwtAuthoritiesGenerator func(clientId, userName string) ([]string, error)
+	// JwtCustomPayloadGenerator Jwt Token Payload 自定义内容生成器
+	JwtCustomPayloadGenerator func(clientId, userName string) (map[string]interface{}, error)
 )
 
-// NewDefaultTokenHandlerFunc 默认TokenHandler
-func NewDefaultTokenHandlerFunc() gin.HandlerFunc {
-	clientStore := store.NewMySQLClientStoreInstance()
-	tokenStore := store.NewMemoryTokenStoreInstance()
-
-	return NewTokenHandlerFunc(clientStore,
-		tokenStore,
-		func(clientId, userName string) ([]string, error) {
-			// 角色信息
-			roles, err := service.NewSysRoleService().GetRolesByUserName(userName)
-			if gorm.IsRecordNotFoundError(err) {
-				return nil, errors.New(fmt.Sprintf("用户[%s]不存在角色信息！\n", userName))
-			} else if err != nil {
-				return nil, err
-			} else {
-				var tmp []string
-				for _, role := range roles {
-					tmp = append(tmp, role.EnName)
-				}
-				return tmp, nil
-			}
-		},
-		func(clientId, userName string) ([]string, error) {
-			// 权限信息
-			permissions, err := service.NewSysPermissionService().GetPermissionsByUserName(userName)
-			if gorm.IsRecordNotFoundError(err) {
-				return nil, errors.New(fmt.Sprintf("用户[%s]不存在权限信息！\n", userName))
-			} else if err != nil {
-				log.Println(err)
-				return nil, err
-			} else {
-				var tmp []string
-				for _, per := range permissions {
-					tmp = append(tmp, per.EnName)
-				}
-				return tmp, nil
-			}
-		},
-		func(clientId, userName string) (map[string]interface{}, error) {
-			session := make(map[string]interface{})
-
-			// 用户信息
-			user, err := service.NewSysUserService().GetUserByUserName(userName)
-			if gorm.IsRecordNotFoundError(err) {
-				return nil, errors.New(fmt.Sprintf("用户[%s]不存在！\n", userName))
-			} else if err != nil {
-				log.Println(err)
-				return nil, err
-			} else {
-				session = map[string]interface{}{
-					"userId":    user.ID,
-					"name":      user.Name,
-					"headerImg": user.HeaderImage,
-					"userName":  user.UserName,
-				}
-			}
-
-			return session, nil
-		},
-	)
-}
-
-// NewTokenHandlerFunc 生成TokenHandlerFunc
-func NewTokenHandlerFunc(
+// JwtTokenGenerator 生成JWT token
+func JwtTokenGenerator(
 	clientStore store.ClientStore,
 	tokenStore store.TokenStore,
-	rolesFunc store.JwtAuthRolesGenerator,
-	authoritiesFunc store.JwtAuthAuthoritiesGenerator,
-	payloadFunc store.JwtPayloadExtendDataGenerator) gin.HandlerFunc {
+	rolesFunc JwtRolesGenerator,
+	authoritiesFunc JwtAuthoritiesGenerator,
+	payloadFunc JwtCustomPayloadGenerator) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 		// 取得请求参数
@@ -114,7 +56,6 @@ func NewTokenHandlerFunc(
 		switch form.GrantType {
 		case common.GrantTypePasswordCredentials:
 			// 密码模式
-
 			flg := false
 			for _, v := range clientInfo.GrantType {
 				if v == common.GrantTypePasswordCredentials {
@@ -181,7 +122,6 @@ func NewTokenHandlerFunc(
 			break
 		case common.GrantTypeRefreshToken:
 			// token刷新模式
-
 			flg := false
 			for _, v := range clientInfo.GrantType {
 				if v == common.GrantTypeRefreshToken {
@@ -236,7 +176,7 @@ func NewTokenHandlerFunc(
 			scope := clientInfo.Scope
 
 			// 生成Token
-			token, refreshToken, err := tokenStore.GenerateToken(clientInfo, userName, scope, roles, authorities, session)
+			token, refreshToken, err := tokenStore.RefreshToken(clientInfo, userName, scope, roles, authorities, session)
 			if err != nil {
 				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, err.Error())
 			}
