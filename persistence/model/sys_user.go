@@ -6,7 +6,7 @@ import (
 
 type SysUser struct {
 	base.PolestarModel
-	UserName    string `gorm:"type:varchar(100);index;not null"`
+	UserName    string `gorm:"type:varchar(100);unique_index;not null"`
 	Name        string `gorm:"type:varchar(45)"`
 	Password    string `gorm:"type:varchar(200)"`
 	HeaderImage string `gorm:"type:varchar(200)"`
