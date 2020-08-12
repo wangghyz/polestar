@@ -31,6 +31,10 @@ type (
 			Cache struct {
 				CleanupInterval time.Duration `yaml:'cleanupInterval'`
 			} `yaml:"cache"`
+			TokenCheck struct {
+				CheckAtServer bool   `yaml:"checkAtServer"`
+				CheckEndpoint string `yaml:"checkEndpoint"`
+			} `yaml:"tokenCheck"`
 			Jwt struct {
 				Secret string `yaml:"secret"`
 			} `yaml:"jwt"`

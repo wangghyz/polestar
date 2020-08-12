@@ -221,6 +221,6 @@ func generateRefreshToken(clientInfo *ClientInfo,
 // Access Token 有效性检查
 func (s *memoryTokenStore) CheckAccessToken(accessToken string) bool {
 	claims := common.ParseJwtToken(accessToken, common.ApplicationConfig().Auth.Jwt.Secret)
-	_, exists := s.Cache.Get(claims[common.ClaimsJTI].(string))
+	_, exists := s.Cache.Get(claims[common.ClaimsJTI].(string) + "-" + C_ACCESS_TOKEN)
 	return exists
 }

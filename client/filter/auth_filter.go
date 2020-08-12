@@ -1,9 +1,13 @@
 package filter
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangghyz/polestar/common"
+	"io/ioutil"
+	"net/http"
+	"strconv"
 )
 
 type (
@@ -55,6 +59,39 @@ func NewAuthFilterHandler(extendAuthFunc ExtendAuthFunc) gin.HandlerFunc {
 
 		if common.TokenType(fmt.Sprintf("%s", tokenData[common.ClaimsType])) != common.TokenTypeAccessToken {
 			common.PanicPolestarError(common.ERR_HTTP_REQUEST_ERROR, "无效的token类型！")
+		}
+
+		// 认证服务器验证token
+		if common.ApplicationConfig().Auth.TokenCheck.CheckAtServer {
+			endPoint := common.ApplicationConfig().Auth.TokenCheck.CheckEndpoint
+			endPoint += token
+
+			resp, err := http.Get(endPoint)
+			if err != nil {
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "服务器端token验证异常！"+err.Error())
+			}
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "服务器端token验证异常！"+err.Error())
+			}
+			if resp.StatusCode != 200 {
+				if resp.StatusCode == 900 {
+					body := &common.PolestarError{}
+					common.HandleErrorToPanicPolestarError(json.Unmarshal(bodyBytes, body), common.ERR_SYS_ERROR)
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, body.Error())
+				} else {
+					common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "服务器端token验证异常！"+err.Error())
+				}
+			}
+
+			rst, err := strconv.ParseBool(string(bodyBytes))
+			if err != nil {
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "服务器端token验证异常！"+err.Error())
+			}
+			if !rst {
+				// 验证不通过
+				common.PanicPolestarError(common.ERR_HTTP_AUTH_FAILED, "服务器端token验证：无效的token")
+			}
 		}
 
 		// 权限验证

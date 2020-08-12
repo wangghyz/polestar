@@ -14,6 +14,10 @@ redis:
   url: 192.168.1.2:6379
   db: 15
 auth:
+  # client (去认证服务器验证token，默认:false)
+  tokenCheck:
+    checkAtServer: true
+    checkEndpoint: http://localhost:9999/check?access_token=
   # server & client (认证服务器与资源服务器保持一致)
   # jwt sign secret
   jwt:
