@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/wangghyz/polestar/common"
+	"github.com/wangghyz/polestar/web/middleware"
 	"github.com/wangghyz/polestar/web/recovery"
 )
 
@@ -15,7 +16,7 @@ func NewPolestarWebEngine() *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	engine.Use(gin.Logger(), recovery.PolestarWebRecovery())
+	engine.Use(gin.Logger(), recovery.PolestarWebRecovery(), middleware.Cors())
 
 	return engine
 }
