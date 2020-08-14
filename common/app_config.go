@@ -17,6 +17,7 @@ type (
 		Server struct {
 			Addr string `yaml:"addr"`
 			Mode string `yaml:"mode"`
+			Cors bool   `yaml:"cors"`
 		} `yaml:"server"`
 		Mysql struct {
 			Url          string `yaml:"url"'`

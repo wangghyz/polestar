@@ -16,7 +16,12 @@ func NewPolestarWebEngine() *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	engine.Use(gin.Logger(), recovery.PolestarWebRecovery(), middleware.Cors())
+	engine.Use(gin.Logger(), recovery.PolestarWebRecovery())
+
+	// 是否处理跨域请求
+	if config.Server.Cors {
+		engine.Use(middleware.Cors())
+	}
 
 	return engine
 }
